@@ -39,7 +39,7 @@ La señal portadora generalmente es una onda senoidal con una frecuencia conocid
 
 La señal modulada mediante el esquema *BPSK* consiste en asigna a cada símbolo una fase de la señal portadora, en nuestro caso, al símbolo 0 se le asignó la fase negativa, al 1 la positiva. Cuando una cadena de símbolos es transmitida se analiza y se asigna la fase uno por uno y luego se suman, para generar una nueva señal, esta nueva onda será la que viajará hasta el receptor.
 
-Para simular este esquema se utilizó el siguiente algoritmo:
+Para simular este esquema se utilizó el algoritmo mostrado en el código 1.
 
 
     for k, bit in enumerate(DATOS):
@@ -49,6 +49,10 @@ Para simular este esquema se utilizó el siguiente algoritmo:
 
         else:
             senal_BPSK [k*p:(k+1)*p] = -senoidal
+
+**Código 1:** La variable *k* lleva el conteo de los bits, la variable *p* corresponde al número de puntos de muestreo de la señal, la variable *senoidal* contiene función seno con frecuencia de 5*KHz* (la portadora). 
+
+<br>
 
 Como se puede ver, al array *senal_BPSK* se le asignan los valores positivos o negativos en base al código que se está analizando, donde *bit* es el código y *k* es el número de código.
 
@@ -102,36 +106,23 @@ Despejando *SNR*:
 ![](https://latex.codecogs.com/gif.latex?SNR%20%3D%2010%5E%7B%5Cfrac%7BSNR_%7BdB%7D%7D%7B10%7D%20%7D)
 </center>
 
-Que es igual a :
+Se tiene que:
 
 <center>
 
-![](https://latex.codecogs.com/gif.latex?SNR%20%3D%20%28%20%5Cfrac%7BA_%7Bsenal%7D%7D%7B%20A_%7Bruido%7D%20%7D%20%29%5E2)
+![](https://latex.codecogs.com/gif.latex?SNR%20%3D%20%5Cfrac%20%7BP_%7Bsenal%7D%7D%20%7BP_%7Bruido%7D%7D)
 </center>
 
-Ahora despejamos el valor de la amplitud de la señal ruidosa:
 
+Por lo tanto:
 <center>
 
-![](https://latex.codecogs.com/gif.latex?A_%7Bruido%7D%20%3D%20%5Csqrt%7B%20%5Cfrac%7BA_%7Bsenal%7D%5E2%20%7D%7B%2010%5E%7B%5Cfrac%7BSNR_%7BdB%7D%7D%7B10%7D%7D%20%7D%20%7D)
+![](https://latex.codecogs.com/gif.latex?P_%7Bruido%7D%20%3D%20%5Cfrac%20%7BP_%7Bsenal%7D%7D%20%7BSNR%7D)
 </center>
-
-Con este resultado es posible obtener los valores de amplitud máximos que puede tener la señal ruidosa que se sumará a la señal *BPSK*, en la siguiente tabla se muestran los valores de dichas amplitudes para los *SNR* en *dB* propuestos en el enunciado, dichos valores se utilizaron a la hora de simular el canal ruidoso en *Python* (ver archivo **tarea4.py**):
 
 <br>
-<center>
 
-| dB |      -2     |      -1     | 0 |       1      |       2      |       3      |
-|:--:|:-----------:|:-----------:|:-:|:------------:|:------------:|:------------:|
-|  A | 1.258925412 | 1.122018454 | 1 | 0.8912509381 | 0.7943282347 | 0.7079457844 |
-
-</center>
-<br>
-
-
-
-
-En la figura 2 se muestra la salida para un *SNR* de -2 dB, se despliega sólo una gráfica porque todas son muy similares entre si. 
+Con estos resultados es posible obtener los valores para la potencia de la señal ruidosa que se sumará a la señal *BPSK*, misma que es necesaria para generar los rangos de ruido en la función de distribución *Gaussiana* como segundo argumento (ver archivo **tarea4.py**). En la figura 2 se muestra la salida para un *SNR* de -2 dB, se despliega sólo una gráfica porque todas son muy similares entre si. 
 
 <br>
 <div align="center">
@@ -155,7 +146,7 @@ La densidad espectral muestra la distribución de la potencia para todas las fre
 <br><br>
 <div align="center">
 <img src=imagenes/espectral_despues.png width=450\textwidth>
-<p>Figura 4 - En este caso la potencia de la señal se estabiliza en 40^-4, que corresponde a la densidad de potencia del ruido que se le sumó a la señal BPSK.</p>
+<p>Figura 4 - En este caso la potencia de la señal se estabiliza aproximadamente en 70^-4, que corresponde a la densidad de potencia del ruido que se le sumó a la señal BPSK.</p>
 </div>
 
 <br>
