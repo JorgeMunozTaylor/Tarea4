@@ -8,11 +8,20 @@ jorge.munoztaylor@ucr.ac.cr
 ```
 
 ## Modo de uso
+
+El programa se creó y se diseñó para ser usado en *Ubuntu* bajo *python3* por lo que no se puede garantizar que funcione adecuadamente en otros sistemas operativos. 
+
+Para ejecutar el programa primero debe ubicarse en la carpeta Tarea4.
+```
+>cd PATH/Tarea4
+```
+Una vez en dicha carpeta puede ejecutar el programa con el comando python3.
+
 ```
 >python3 tarea4 bits10k.csv
 ```
 
-## Bibliotecas
+## Dependencias
 ```
 1. scipy
 2. numpy
