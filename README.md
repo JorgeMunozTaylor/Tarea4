@@ -51,7 +51,7 @@ Finalmente la señal modulada con el esquema *BPSK* se muestra en la figura 1.
 <p>Figura 1 - </p>
 </div>
 
----
+
 ## 2. Calcular la potencia promedio de la señal modulada generada.
 
 
@@ -68,7 +68,7 @@ En este caso la ecuación, como *X(t)* es un valor conocido, ![pxx](https://late
 
 Al introducir este resultado en Python y utilizar *X* como la función *BPSK* generada se tiene un valor de potencia promedio de alrededor de 0.4899999999999997 *Watts*.
 
----
+
 ## 3. Simular un canal ruidoso del tipo AWGN (ruido aditivo blanco gaussiano) con una relación señal a ruido (SNR) desde -2 hasta 3 dB.
 
 Se tiene para *SNR* en dB:
@@ -110,7 +110,7 @@ Estos valores se utilizaron a la hora de simular el canal ruidoso en *Python* -v
 </div>
 
 
----
+
 ## 4. Graficar la densidad espectral de potencia de la señal con el método de Welch (SciPy), antes y después del canal ruidoso.
 
 
@@ -124,7 +124,7 @@ Estos valores se utilizaron a la hora de simular el canal ruidoso en *Python* -v
 <p>Figura 4 </p>
 </div>
 
----
+
 ## 5. Demodular y decodificar la señal y hacer un conteo de la tasa de error de bits (BER, bit error rate) para cada nivel SNR.
 
 
@@ -142,7 +142,7 @@ Para demodular y decodificar la señal modulada BPSK se siguen los pasos a conti
 
 
 
----
+
 ## 6. Graficar BER versus SNR.
 ---
 
