@@ -38,6 +38,7 @@ def SNR_ ( a_ruido ):
     return (1/a_ruido)**2
 
 
+# Función princiapl del programa.
 if __name__=="__main__":
 
     archivo = sys.argv #Abre el archivo en base a la dirección dada como primer argumento. 
@@ -96,7 +97,7 @@ if __name__=="__main__":
     plt.figure ()
     plt.title  ("Señal BPSK")
     plt.plot   ( senal_BPSK[0:pb*p] )
-    plt.xlabel ("Tiempo [s]")
+    plt.xlabel ("Puntos de muestreo")
     plt.ylabel ("Amplitud")
     plt.savefig("imagenes/bpsk.png")
     plt.show   ()
@@ -169,7 +170,7 @@ if __name__=="__main__":
     plt.figure  ()
     plt.plot    ( Rx[i][0:pb*p] )
     plt.title   ( "Señal AWGN" )
-    plt.xlabel  ( "Tiempo [s]" )
+    plt.xlabel  ( "Puntos de muestreo" )
     plt.ylabel  ( "Amplitud" )
     plt.savefig ( "imagenes/ruido.png" )
     plt.title   ("Señal BPSK")
@@ -285,8 +286,8 @@ if __name__=="__main__":
     plt.plot    ( SNR, BER ) 
     plt.xticks  ( SNR, dB )
     plt.title   ( "BER vs SNR" )
-    plt.xlabel  ( "SNR" )
-    plt.ylabel  ( "BER" )
+    plt.xlabel  ( "SNR [dB]" )
+    plt.ylabel  ( "BER [%]" )
     plt.grid    ()
     plt.savefig ("imagenes/ber_vs_snr.png")
     plt.show    ()
