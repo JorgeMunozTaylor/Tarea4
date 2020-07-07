@@ -21,21 +21,20 @@ from math import sqrt # Permite hacer raíces cuadradas.
 import matplotlib.pyplot as plt # Contiene las funciones necesarias para las gráficas.
 
 
-# Función que recibe un valor en dB y devuelve el valor en amplitud equivalente a
-# esos dB, en este caso estamos trabajando con una señal senoidal de amplitud 1.
+# Función que recibe la potencia de la señal y regresa la potencia del ruido.
 #
-# [in] dB: Valor del SNR en decibeles.
-# [out] Regresa el valor máximo de la amplitud de la señal asociado al SNR en dB. 
-def amplitud_ruido ( dB ):
-    return sqrt ( (1)**2 / ( 10**( dB/10) ) )
+# [in] p_senal: Valor del SNR en decibeles.
+# [in] snr: Valor del SNR NO en dB
+# [out] Regresa el valor de la potencia del ruido. 
+def p_ruido ( p_senal, snr ):
+    return (p_senal/snr)
 
-# Función que recibe el valor de la amplitud máxima del ruido y devuelve el SNR
-# asociado a el.
+# Función que recibe el SNR_dB devuelve el SNR.
 #
-# [in] a_ruido: valor máximo de la amplitud del ruido.
-# [out] Regresa el SNR asociado a a_ruido.
-def SNR_ ( a_ruido ):
-    return (1/a_ruido)**2
+# [in] snr_db: SNR en decibeles.
+# [out] Regresa el SNR.
+def SNR_ ( snr_db ):
+    return ( 10**(snr_db/10) )
 
 
 # Función princiapl del programa.
@@ -136,39 +135,41 @@ if __name__=="__main__":
     dB = np.append ( dB, 3 )
      
     # Se crea un vector vacío donde se guardarán los valores de amplitud para el ruido.
-    ASNR = np.empty(0, float)  
+    P_ruido = np.empty(0, float)  
 
     # Se crea un vector vacío donde se guardarán los valores de SNR.
     SNR = np.empty(0,float)
 
     # Se agregan al array ASNR los valores que se utilizarán como límites para la amplitud
     # de la señal ruidosa.
-    for i in dB:
-        ASNR = np.append ( ASNR, amplitud_ruido (i) )
+    #for i in dB:
+    #    ASNR = np.append ( ASNR, amplitud_ruido (i) )
 
     # Se agregan al array SNR los valores de SNR (no dB) para los SNR dB -2,-1,0,1,2,3 dB 
     # respectivamente.
-    SNR  = np.append ( SNR, SNR_ (ASNR) ) 
+    for i in dB:
+        SNR  = np.append ( SNR, SNR_ (i) ) 
 
-    # Array que contendrá la señal ruidosa.
-    ruido = []
+    # Obtiene los valores de la potencia del ruido para los SNR.
+    P_ruido = np.append ( P_ruido, p_ruido ( segundo_momento_BPSK, SNR ) )
 
     # Array que contendrá la señal BPSK más la señal ruidosa.
-    Rx    = []
+    Rx = np.zeros ( shape = ( len(SNR), len(senal_BPSK) ) )
 
     # Genera la señal ruidosa.
-    for asnr in ASNR:
-        ruido.append ( np.random.normal ( 0, asnr, senal_BPSK.shape ) )
+    for RUIDO in P_ruido:
+        ruido = np.random.normal ( 0, RUIDO, senal_BPSK.shape ) 
          
     # Matriz que contiene los la señal BPSK con cada una de las señales ruidosas.     
-    Rx = senal_BPSK + ruido 
+    for i,_ in enumerate(SNR):
+        Rx[i] = senal_BPSK + ruido 
 
 
     print ("--> Generando gráfico de la señal ruidosa...")
 
     # Se genera el gráfico.
     plt.figure  ()
-    plt.plot    ( Rx[i][0:pb*p] )
+    plt.plot    ( Rx[0][0:pb*p] )
     plt.title   ( "Señal AWGN" )
     plt.xlabel  ( "Puntos de muestreo" )
     plt.ylabel  ( "Amplitud" )
@@ -207,7 +208,7 @@ if __name__=="__main__":
     print ("--> Generando gráfico de la densidad espectral después del canal ruidoso...")
     plt.figure   ()
     plt.semilogy (fx, Pxx_den)
-    plt.ylim     ( [1e-4, 0.1] )
+    plt.ylim     ( [1e-5, 0.1] )
     plt.title    ( "Densidad espectral después del canal ruidoso" )
     plt.xlabel   ( "Frecuencia [Hz]" )
     plt.ylabel   ( "Densidad espectral [dB]" )
@@ -228,18 +229,18 @@ if __name__=="__main__":
     senoidal2 = np.sin (2*np.pi*f*t)
 
     # Matriz de ceros donde se guardarán los valores decodificados para cada SNR.
-    decodificada = np.zeros ( shape = ( len(ASNR), len(DATOS) ) )
+    decodificada = np.zeros ( shape = ( len(SNR), len(DATOS) ) )
  
     # Se multiplicará la señal modulada por una señal con la misma frecuencia de la portadora.
     sen = []
-    for i,_ in enumerate(ASNR):
+    for i,_ in enumerate(SNR):
         sen.append ( Rx[i]*senoidal2 )
 
     # El proceso de decodificación consiste en tomar un rango de la señal recibida
     # y sumar dichos valores, luego se determina si el resultado es mayor o menor
     # a 0, si es mayor a 0 el código corresponde a un 1, si es negativo el 
     # código es un 0.
-    for i,_ in enumerate(ASNR):
+    for i,_ in enumerate(SNR):
         for k, bits in enumerate (DATOS):
 
             sumatoria = np.sum ( sen [i][k*p:(k+1)*p] )
@@ -256,7 +257,7 @@ if __name__=="__main__":
     # Se recorre cada señal decodificada y se recorre cada uno de sus bits para 
     # compararlos con los bits originales, si no es así se toma como un error y
     # guarda el bit rate error en el array BER.
-    for i,_ in enumerate(ASNR): 
+    for i,_ in enumerate(SNR): 
 
         error = 0
         for j, bits in enumerate (decodificada[i]):
